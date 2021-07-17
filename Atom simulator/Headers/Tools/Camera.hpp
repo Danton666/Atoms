@@ -31,6 +31,7 @@ private:
 	void mouseControl();
 
 public:
+	Camera();
 	Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
 	~Camera();
 

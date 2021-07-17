@@ -38,6 +38,10 @@ void Camera::mouseControl()
     cameraTarget = glm::normalize(direction);
 }
 
+Camera::Camera() : Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f))
+{
+}
+
 Camera::Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up) : cameraSpeed(1.f), window(nullptr)
 {
     pitch = yaw = 0.f;

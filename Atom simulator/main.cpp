@@ -95,7 +95,8 @@ int main(int argc, char** argv)
 	unsigned int crProg;
 	makeProgram(&crProg, crVShSrc, crFShSrc);
 
-	Sphere core(0.1f, 0.1f, 0.1f, 15, 15);
+	float coreSize = 0.1f;
+	Sphere core(coreSize, coreSize, coreSize, 15, 15);
 
 	float electronsSize = 0.07f;
 
@@ -120,11 +121,13 @@ int main(int argc, char** argv)
 
 	lines.bind(lnVAO, lnVBO, GL_STATIC_DRAW);
 
-	Circle circle(0.0f, 0.f, 0.f, 100);
-	circle.setScale(0.5f, 0.5f, 1.0f);
-	unsigned int crVAO, crVBO;
-	glGenVertexArrays(1, &crVAO);
-	glGenBuffers(1, &crVBO);
+	Circle circle1(0.f, 0.f, 0.f, 100);
+	Circle circle2(0.f, 0.f, 0.f, 100);
+	Circle circle3(0.f, 0.f, 0.f, 100);
+	Circle circle4(0.f, 0.f, 0.f, 100);
+	unsigned int crVAO[4], crVBO[4];
+	glGenVertexArrays(4, crVAO);
+	glGenBuffers(4, crVBO);
 
 	unsigned int VAO[5], VBO[5], EBO[5];
 	glGenVertexArrays(5, VAO);
@@ -136,7 +139,10 @@ int main(int argc, char** argv)
 	electron3.bindSphere(VAO[2], VBO[2], EBO[2], GL_DYNAMIC_DRAW);
 	electron4.bindSphere(VAO[3], VBO[3], EBO[3], GL_DYNAMIC_DRAW);
 	
-	circle.bindCircle(crVAO, crVBO, GL_STATIC_DRAW);
+	circle1.bindCircle(crVAO[0], crVBO[0], GL_STATIC_DRAW);
+	circle2.bindCircle(crVAO[1], crVBO[1], GL_STATIC_DRAW);
+	circle3.bindCircle(crVAO[2], crVBO[2], GL_STATIC_DRAW);
+	circle4.bindCircle(crVAO[3], crVBO[3], GL_STATIC_DRAW);
 
 	glUseProgram(shProg);
 
@@ -155,12 +161,8 @@ int main(int argc, char** argv)
 
 	glm::mat4 trans;
 
-	glm::vec3 cameraPos = glm::vec3(0.f, 0.f, 5.f);
-	glm::vec3 cameraTarget = glm::vec3(0.f, -1.f, -5.f);
-	glm::vec3 cameraUp = glm::vec3(0.f, 1.f, 0.f);
-
-	Camera camera(cameraPos, cameraTarget, cameraUp);
-	//camera.setSpeed(0.0003125f);
+	Camera camera;
+	camera.setPos(glm::vec3(0.0f, 0.0f, 5.f));
 	camera.setSpeed(0.005f);
 
 	camera.bind(window);
@@ -194,27 +196,24 @@ int main(int argc, char** argv)
 		camera.setView(&view);
 		float radius = 1.f;
 
-		timeValue *= 5.f;
+		float speedEl = 5.f;
+		float speedCore = sinf(timeValue * 0.01f) * 1.2f;
 
 		float a = 5.f;
 		float b = 5.f;
-		float c = 1.f;
+		float c = 0.1f;
 
 		glm::vec3 point;
-		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue) - (a * b * sinf(timeValue) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
-		point.y = 0.0f + (radius * sinf(timeValue) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
-		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue) + ((b * c * sinf(timeValue)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue * speedEl) - (a * b * sinf(timeValue * speedEl) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.y = 0.0f + (radius * sinf(timeValue * speedEl) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
+		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue * speedEl) + ((b * c * sinf(timeValue * speedEl)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
 
 		trans = glm::translate(trans, glm::normalize(point));
-		//trans = glm::translate(trans, glm::normalize(glm::vec3(cos(glm:`:radians(yaw)) * cos(glm::radians(pitch)), sin(glm::radians(pitch)), sin(glm::radians(yaw)) * cos(glm::radians(pitch)))));
-
-		//trans = glm::translate(trans, glm::vec3(2.f, 0.f, sin(timeValue) * 1.f));
 		//model = glm::rotate(model, glm::radians(120.f), glm::vec3(0.f, 1.f, 1.f));
 
-		color = glm::vec3(1.f, 0.f, 0.f);
+		color = glm::vec3(0.f, 0.f, 1.f);
 
 		projection = glm::perspective(glm::radians(45.f), 800.f / 600.f, 0.1f, 100.f);
-		//glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
@@ -223,73 +222,97 @@ int main(int argc, char** argv)
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform3fv(colorLoc, 1, glm::value_ptr(color));
 
-		//red
 		electron1.draw();
 
 		a = -5.f;
 		b = 5.f;
-		c = 1.f;
+		c = 0.1f;
 
-		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue) - (a * b * sinf(timeValue) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
-		point.y = 0.0f + (radius * sinf(timeValue) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
-		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue) + ((b * c * sinf(timeValue)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue * speedEl) - (a * b * sinf(timeValue * speedEl) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.y = 0.0f + (radius * sinf(timeValue * speedEl) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
+		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue * speedEl) + ((b * c * sinf(timeValue * speedEl)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
 
 		trans = glm::mat4(1.f);
 		trans = glm::translate(trans, glm::normalize(point));
 
-		color = glm::vec3(0.f, 0.f, 1.f);
-
 		glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
-		glUniform3fv(colorLoc, 1, glm::value_ptr(color));
 
-		//blue
 		electron2.draw();
 
 		a = 0.1f;
 		b = 10.f;
 		c = 0.1f;
 
-		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue) - (a * b * sinf(timeValue) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
-		point.y = 0.0f + (radius * sinf(timeValue) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
-		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue) + ((b * c * sinf(timeValue)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue * speedEl) - (a * b * sinf(timeValue * speedEl) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.y = 0.0f + (radius * sinf(timeValue * speedEl) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
+		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue * speedEl) + ((b * c * sinf(timeValue * speedEl)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
 
 		trans = glm::mat4(1.f);
 		trans = glm::translate(trans, glm::normalize(point));
 
-		color = glm::vec3(1.f, 0.f, 1.f);
-
 		glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
-		glUniform3fv(colorLoc, 1, glm::value_ptr(color));
 
-		//purple
 		electron3.draw();
 
 		a = -10.f;
 		b = 0.1f;
 		c = 0.1f;
 
-		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue) - (a * b * sinf(timeValue) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
-		point.y = 0.0f + (radius * sinf(timeValue) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
-		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue) + ((b * c * sinf(timeValue)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.x = 0.0f + (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (c * cosf(timeValue * speedEl) - (a * b * sinf(timeValue * speedEl) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
+		point.y = 0.0f + (radius * sinf(timeValue * speedEl) * (sqrtf(powf(a, 2) + powf(c, 2))) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2)));
+		point.z = 0.0f - (radius / sqrtf(powf(a, 2) + powf(c, 2))) * (a * cosf(timeValue * speedEl) + ((b * c * sinf(timeValue * speedEl)) / sqrtf(powf(a, 2) + powf(b, 2) + powf(c, 2))));
 
 		trans = glm::mat4(1.f);
 		trans = glm::translate(trans, glm::normalize(point));
 
-		color = glm::vec3(0.f, 1.f, 0.f);
-
 		glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
-		glUniform3fv(colorLoc, 1, glm::value_ptr(color));
 
-		//green
 		electron4.draw();
 
-		trans = glm::mat4(1.f);
-		trans = glm::translate(trans, glm::vec3(sinf(timeValue * 20.f) * 0.02f, cosf(timeValue * 20.f) * 0.02f, random(-0.02f, 0.02f)));
 		color = glm::vec3(1.f, 1.f, 1.f);
-		glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
 		glUniform3fv(colorLoc, 1, glm::value_ptr(color));
 
-		core.draw();
+		float diffusion = 0.1f;
+
+		for (int i = 0; i < 10; ++i)
+		{
+			trans = glm::mat4(1.f);
+			trans = glm::translate(trans, glm::vec3(speedCore * random(-diffusion, diffusion), speedCore * random(-diffusion, diffusion), speedCore * random(-diffusion, diffusion)));
+			glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+			core.draw();
+		}
+
+		/*draw circles*/
+		trans = glm::mat4(1.f);
+		color = glm::vec3(1.f, 0.f, 0.f);
+		glUniform3fv(colorLoc, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+		model = glm::mat4(1.f);
+		model = glm::rotate(model, glm::radians(90.f), glm::vec3(-1.f, 1.f, 0.f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		circle1.draw();
+
+		model = glm::mat4(1.f);
+		model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 1.f, 0.f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		circle2.draw();
+
+		model = glm::mat4(1.f);
+		model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		circle3.draw();
+
+		model = glm::mat4(1.f);
+		model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.f, 1.f, 0.f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		circle4.draw();
+		/*draw circles*/
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
