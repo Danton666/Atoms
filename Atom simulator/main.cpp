@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 	unsigned int crProg;
 	makeProgram(&crProg, crVShSrc, crFShSrc);
 
-	float coreSize = 0.1f;
+	float coreSize = 0.2f;
 	Sphere core(coreSize, coreSize, coreSize, 15, 15);
 
 	float electronsSize = 0.07f;
@@ -138,6 +138,8 @@ int main(int argc, char** argv)
 	electron2.bindSphere(VAO[1], VBO[1], EBO[1], GL_DYNAMIC_DRAW);
 	electron3.bindSphere(VAO[2], VBO[2], EBO[2], GL_DYNAMIC_DRAW);
 	electron4.bindSphere(VAO[3], VBO[3], EBO[3], GL_DYNAMIC_DRAW);
+
+	core.bindSphere(VAO[4], VBO[4], EBO[4], GL_DYNAMIC_DRAW);
 	
 	circle1.bindCircle(crVAO[0], crVBO[0], GL_STATIC_DRAW);
 	circle2.bindCircle(crVAO[1], crVBO[1], GL_STATIC_DRAW);
@@ -197,7 +199,7 @@ int main(int argc, char** argv)
 		float radius = 1.f;
 
 		float speedEl = 5.f;
-		float speedCore = sinf(timeValue * 0.01f) * 1.2f;
+		float speedCore = sinf(timeValue * 0.5f) * 1.3f;
 
 		float a = 5.f;
 		float b = 5.f;
@@ -274,7 +276,7 @@ int main(int argc, char** argv)
 
 		float diffusion = 0.1f;
 
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < 7; ++i)
 		{
 			trans = glm::mat4(1.f);
 			trans = glm::translate(trans, glm::vec3(speedCore * random(-diffusion, diffusion), speedCore * random(-diffusion, diffusion), speedCore * random(-diffusion, diffusion)));
