@@ -30,6 +30,10 @@ private:
 
     Circle* circles[4];
 
+    float x_pos;
+    float y_pos;
+    float z_pos;
+
     const char* vertexShSrc =
         "#version 330 core\n"
         "layout (location = 0) in vec3 pos;\n"

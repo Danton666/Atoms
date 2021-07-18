@@ -13,10 +13,6 @@ Circle::Circle(float xPos, float yPos, float zPos, unsigned int segments)
 
     this->segments = segments;
 
-    float angle = 360.f / (float)segments;
-
-    //std::cout << "angle = " << angle << '\n';
-
     for (unsigned int i = 0; i < segments; ++i)
     {
         float alpha = 2.f * (float)M_PI * float(i) / float(segments);
@@ -90,6 +86,7 @@ void Circle::draw()
 {
     glLineWidth(2.f);
 
-    glBindVertexArray(VAO);
+    if(this->VAO != 0) 
+        glBindVertexArray(this->VAO);
     glDrawArrays(GL_LINE_LOOP, 0, segments);
 }

@@ -64,14 +64,14 @@ int main(int argc, char** argv)
         }
     }
 
-    Atom atom;
+    Atom atom(1.f, 1.f, 1.f);
     atom.bind(VAO1, VBO1, EBO1);
 
     memset(VAO1, 0, sizeof(VAO1));
     memset(VBO1, 0, sizeof(VBO1));
     memset(EBO1, 0, sizeof(EBO1));
 
-    Atom atom2(0.5f, 5.f, 0.0f);
+    Atom atom2(0.5f, 5.f, 0.f);
     atom2.bind(VAO2, VBO2, EBO2);
 
     memset(VAO2, 0, sizeof(VAO2));
@@ -114,12 +114,12 @@ int main(int argc, char** argv)
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(18, VAO);
+    glfwTerminate();
+    return 0;    glDeleteVertexArrays(18, VAO);
     glDeleteBuffers(18, VBO);
     glDeleteBuffers(10, EBO);
 
-    glfwTerminate();
-    return 0;
+
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
