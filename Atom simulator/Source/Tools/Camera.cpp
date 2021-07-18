@@ -99,6 +99,6 @@ void Camera::control()
 void Camera::disableCursor()
 {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPos(window, 1.5f, 1.5f);
+    glfwSetCursorPos(window, 0.f, 0.f);
 }
 

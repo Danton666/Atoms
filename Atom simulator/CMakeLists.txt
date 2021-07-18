@@ -7,13 +7,17 @@ set(GLAD "C:/GLAD/src/glad.c")
 set(GLUT "C:/glutdlls36/glut.h")
 
 set(SOURCE	"main.cpp" 
-			"Source/Entities/Sphere.cpp" 
-			"Source/Entities/Circle.cpp" 
-			"Source/Tools/Camera.cpp" "Source/Entities/Lines.cpp" "Source/Atom.cpp")
+            "Source/Entities/Sphere.cpp" 
+            "Source/Entities/Circle.cpp" 
+            "Source/Tools/Camera.cpp" 
+            "Source/Entities/Lines.cpp" 
+            "Source/Atom.cpp")
 
 set(HEADERS "Headers/Entities/Sphere.hpp" 
-			"Headers/Entities/Circle.hpp" 
-			"Headers/Tools/Camera.hpp" "Headers/Entities/Lines.hpp" "Headers/Atom.hpp")
+            "Headers/Entities/Circle.hpp" 
+            "Headers/Tools/Camera.hpp" 
+            "Headers/Entities/Lines.hpp" 
+            "Headers/Atom.hpp")
 
 add_executable (Atom ${SOURCE} ${HEADERS} ${GLAD})
 
