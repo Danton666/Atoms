@@ -114,12 +114,12 @@ int main(int argc, char** argv)
         glfwPollEvents();
     }
 
-    glfwTerminate();
-    return 0;
     glDeleteVertexArrays(18, VAO);
     glDeleteBuffers(18, VBO);
     glDeleteBuffers(10, EBO);
 
+    glfwTerminate();
+    return 0;
 
 }
 
