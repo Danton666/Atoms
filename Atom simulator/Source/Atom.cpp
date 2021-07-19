@@ -79,20 +79,13 @@ Atom::Atom(float xPos, float yPos, float zPos)
     core = new Sphere(0.1f, 0.1f, 0.1f, 15, 15);
     core->setOffset(xPos, yPos, zPos);
 
-    for (int i = 0; i < 4; ++i)
-    {
-        electrons[i] = new Sphere(0.07f, 0.07f, 0.07f, 15, 15);
-        electrons[i]->setOffset(xPos, yPos, zPos);
+    electrons = new Sphere(0.07f, 0.07f, 0.07f, 15, 15);
+    electrons->setOffset(xPos, yPos, zPos);
 
-        circles[i] = new Circle(0.f, 0.f, 0.f, 100);
-    }
+    circles = new Circle(0.f, 0.f, 0.f, 100);
 
     if (Atom::makeProgram(&shaderProgram, vertexShSrc, fragmentShSrc) != 0)
         this->~Atom();
-
-    memset(VAO, 0, sizeof(VAO));
-    memset(VBO, 0, sizeof(VBO));
-    memset(EBO, 0, sizeof(EBO));
 
     glUseProgram(shaderProgram);
 
@@ -116,11 +109,8 @@ Atom::Atom(float xPos, float yPos, float zPos)
 
 Atom::~Atom()
 {
-    for (int i = 0; i < 4; ++i)
-    {
-        delete circles[i];
-        delete electrons[i];
-    }
+    delete circles;
+    delete electrons;
 
     delete core;
 }
@@ -131,12 +121,9 @@ void Atom::bind()
     core->bind(GL_DYNAMIC_DRAW);
 
     /*Bind Electrons & circles*/
-    for (int i = 0; i < 4; ++i)
-    {
-        electrons[i]->bind(GL_DYNAMIC_DRAW);
+    electrons->bind(GL_DYNAMIC_DRAW);
 
-        circles[i]->bind(GL_STATIC_DRAW);
-    }
+    circles->bind(GL_STATIC_DRAW);
 }
 
 void Atom::setCoreColor(const glm::vec3& rgb)
@@ -189,7 +176,7 @@ void Atom::draw()
 
     glUniformMatrix4fv(translationLoc, 1, GL_FALSE, glm::value_ptr(translation));
 
-    electrons[0]->draw();
+    electrons->draw();
 
     a = -5.f;
     b = 5.f;
@@ -204,7 +191,7 @@ void Atom::draw()
 
     glUniformMatrix4fv(translationLoc, 1, GL_FALSE, glm::value_ptr(translation));
 
-    electrons[0]->draw();
+    electrons->draw();
 
     a = 0.1f;
     b = 10.f;
@@ -219,7 +206,7 @@ void Atom::draw()
 
     glUniformMatrix4fv(translationLoc, 1, GL_FALSE, glm::value_ptr(translation));
 
-    electrons[0]->draw();
+    electrons->draw();
 
     a = -10.f;
     b = 0.1f;
@@ -234,7 +221,7 @@ void Atom::draw()
 
     glUniformMatrix4fv(translationLoc, 1, GL_FALSE, glm::value_ptr(translation));
 
-    electrons[0]->draw();
+    electrons->draw();
     /*draw electrons*/
 
     /*draw the core*/
@@ -263,25 +250,25 @@ void Atom::draw()
     glUniformMatrix4fv(translationLoc, 1, GL_FALSE, glm::value_ptr(translation));
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    circles[0]->draw();
+    circles->draw();
 
     model = glm::mat4(1.f);
     model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 1.f, 0.f));
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    circles[0]->draw();
+    circles->draw();
 
     model = glm::mat4(1.f);
     model = glm::rotate(model, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    circles[0]->draw();
+    circles->draw();
 
     model = glm::mat4(1.f);
     model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.f, 1.f, 0.f));
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    circles[0]->draw();
+    circles->draw();
     /*draw circles*/
 }
 

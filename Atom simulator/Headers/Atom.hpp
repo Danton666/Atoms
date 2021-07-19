@@ -13,22 +13,10 @@
 class Atom
 {
 private:
-    /*
-    * VAO & VBO
-    * [0]	- core
-    * [1-4]	- electrons
-    * [5-8] - circles
-    * 
-    * EBO
-    * [0]	- core
-    * [1-4] - electrons
-    */
-    unsigned int VAO[9], VBO[9], EBO[5];
-
-    Sphere* electrons[4];
+    Sphere* electrons;
     Sphere* core;
 
-    Circle* circles[4];
+    Circle* circles;
 
     float x_pos;
     float y_pos;
@@ -80,6 +68,7 @@ private:
     static int makeProgram(unsigned int* program, const char* vertexShader, const char* fragmentShader);
     static int checkErrors(unsigned int entity, const char* type);
 
+public:
     static float random(float min, float max);
 
 public:

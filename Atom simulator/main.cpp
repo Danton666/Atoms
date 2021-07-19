@@ -44,12 +44,14 @@ int main(int argc, char** argv)
 
     glViewport(0, 0, 800, 600);
 
+    std::vector<Atom*> atoms;
+
     /*
     * Firstly need to create all
     * objects which use entities
     */
-    Atom atom(1.f, 1.f, 1.f);
-    Atom atom2(0.5f, 5.f, 0.f);
+    for (int i = 0; i < 20; ++i)
+        atoms.push_back(new Atom(Atom::random(-10.f, 10.f), Atom::random(-10.f, 10.f), Atom::random(-10.f, 10.f)));
 
     /*
     * Then call generateObjects()
@@ -58,8 +60,8 @@ int main(int argc, char** argv)
     generateObjects();
 
     /*Lastly, call bind()*/
-    atom.bind();
-    atom2.bind();
+    for(int i = 0; i < atoms.size(); ++i)
+        atoms[i]->bind();
 
     glm::mat4 view;
 
@@ -67,6 +69,10 @@ int main(int argc, char** argv)
     camera.setPos(glm::vec3(0.0f, 0.0f, 5.f));
     camera.setSpeed(0.005f);
 
+    /*
+    * The camera doesn't use entities,
+    * so it doesn't need VAO, VBO & EBO
+    */
     camera.bind(window);
     camera.disableCursor();
     camera.setSensetivity(0.1f);
@@ -88,14 +94,18 @@ int main(int argc, char** argv)
 
         camera.setView(&view);
 
-        atom.setView(view);
-        atom.draw();
-        atom2.setView(view);
-        atom2.draw();
+        for (int i = 0; i < atoms.size(); ++i)
+        {
+            atoms[i]->setView(view);
+            atoms[i]->draw();
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    for (int i = 0; i < atoms.size(); ++i)
+        delete atoms[i];
 
     /*
     * Delete VAO, VBO, EBO
