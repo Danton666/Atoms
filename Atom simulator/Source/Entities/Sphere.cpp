@@ -1,13 +1,24 @@
 #define _USE_MATH_DEFINES
 
+#include "extern.hpp"
+
 #include "Entities/Sphere.hpp"
+#include "Tools/generator.hpp"
+
 #include <cmath>
 
 Sphere::Sphere(float xSize, float ySize, float zSize, unsigned int xS, unsigned int yS)
 {
-	VAO = 0;
-	VBO = 0;
-	EBO = 0;
+	++receptacle.vaoCounter;
+	++receptacle.vboCounter;
+	++receptacle.eboCounter;
+
+	vertexNumber = receptacle.vaoCounter;
+	elementaryNumber = receptacle.eboCounter;
+
+	VAO = -1;
+	VBO = -1;
+	EBO = -1;
 
 	xSegments = xS;
 	ySegments = yS;
@@ -87,11 +98,11 @@ void Sphere::setScale(float xScale, float yScale, float zScale)
 	}
 }
 
-void Sphere::bindSphere(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int usage)
+void Sphere::bind(/*unsigned int VAO, unsigned int VBO, unsigned int EBO,*/ unsigned int usage)
 {
-	this->VAO = VAO;
-	this->VBO = VBO;
-	this->EBO = EBO;
+	this->VAO = receptacle.VAO[vertexNumber - 1];
+	this->VBO = receptacle.VBO[vertexNumber - 1];
+	this->EBO = receptacle.EBO[elementaryNumber - 1];
 
 	glBindVertexArray(this->VAO);
 
@@ -103,11 +114,14 @@ void Sphere::bindSphere(unsigned int VAO, unsigned int VBO, unsigned int EBO, un
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void Sphere::draw()
 {
-	if (VAO != 0)
+	if (VAO != -1)
 		glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, countSegs, GL_UNSIGNED_INT, 0);
 }

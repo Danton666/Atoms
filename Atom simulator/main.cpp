@@ -5,13 +5,15 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+#include "global.hpp"
+#include "Tools/Camera.hpp"
+#include "Tools/generator.hpp"
+
 #include "Entities/Sphere.hpp"
 #include "Entities/Circle.hpp"
 #include "Entities/Lines.hpp"
 
 #include "Atom.hpp"
-
-#include "Tools/Camera.hpp"
 
 #include <chrono>
 #include <ctime>
@@ -42,41 +44,22 @@ int main(int argc, char** argv)
 
     glViewport(0, 0, 800, 600);
 
-    unsigned int VAO[18], VBO[18], EBO[10];
-    glGenVertexArrays(18, VAO);
-    glGenBuffers(18, VBO);
-    glGenBuffers(10, EBO);
-
-    unsigned int VAO1[9], VBO1[9], EBO1[5];
-    unsigned int VAO2[9], VBO2[9], EBO2[5];
-    for (int i = 0; i < 9; ++i)
-    {
-        VAO1[i] = VAO[i];
-        VBO1[i] = VBO[i];
-
-        VAO2[i] = VAO[i + 9];
-        VBO2[i] = VBO[i + 9];
-
-        if (i < 5)
-        {
-            EBO1[i] = EBO[i];
-            EBO2[i] = EBO[i + 5];
-        }
-    }
-
+    /*
+    * Firstly need to create all
+    * objects which use entities
+    */
     Atom atom(1.f, 1.f, 1.f);
-    atom.bind(VAO1, VBO1, EBO1);
-
-    memset(VAO1, 0, sizeof(VAO1));
-    memset(VBO1, 0, sizeof(VBO1));
-    memset(EBO1, 0, sizeof(EBO1));
-
     Atom atom2(0.5f, 5.f, 0.f);
-    atom2.bind(VAO2, VBO2, EBO2);
 
-    memset(VAO2, 0, sizeof(VAO2));
-    memset(VBO2, 0, sizeof(VBO2));
-    memset(EBO2, 0, sizeof(EBO2));
+    /*
+    * Then call generateObjects()
+    * to generate VAO, VBO, EBO
+    */
+    generateObjects();
+
+    /*Lastly, call bind()*/
+    atom.bind();
+    atom2.bind();
 
     glm::mat4 view;
 
@@ -114,13 +97,13 @@ int main(int argc, char** argv)
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(18, VAO);
-    glDeleteBuffers(18, VBO);
-    glDeleteBuffers(10, EBO);
+    /*
+    * Delete VAO, VBO, EBO
+    */
+    cleanUpObjects();
 
     glfwTerminate();
     return 0;
-
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

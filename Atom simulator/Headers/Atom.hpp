@@ -89,7 +89,7 @@ public:
     Atom(Atom&) = delete;
     Atom(const Atom&) = delete;
 
-    void bind(unsigned int VAO[9], unsigned int VBO[9], unsigned int EBO[5]);
+    void bind();
 
     void setCoreColor(const glm::vec3& rgb);
     void setElectronsColor(const glm::vec3& rgb);

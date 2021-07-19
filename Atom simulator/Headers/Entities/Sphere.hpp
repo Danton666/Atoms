@@ -8,6 +8,9 @@
 class Sphere
 {
 private:
+    unsigned int vertexNumber;
+    unsigned int elementaryNumber;
+
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
@@ -27,7 +30,7 @@ public:
     void setOffset(float xOfffset, float yOffset, float zOffset);
     void setScale(float xScale, float yScale, float zScale);
 
-    void bindSphere(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int usage = GL_STATIC_DRAW);
+    void bind(unsigned int usage = GL_STATIC_DRAW);
 
     void draw();
 };

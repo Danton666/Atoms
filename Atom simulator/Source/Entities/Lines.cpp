@@ -1,9 +1,17 @@
+#include "extern.hpp"
+
 #include "Entities\Lines.hpp"
+#include "Tools/generator.hpp"
 
 Lines::Lines(float x1, float y1, float z1, float x2, float y2, float z2)
 {
-    this->VAO = 0;
-    this->VBO = 0;
+    ++receptacle.vaoCounter;
+    ++receptacle.vboCounter;
+
+    vertexNumber = receptacle.vaoCounter;
+
+    this->VAO = -1;
+    this->VBO = -1;
 
     this->width = 0.f;
 
@@ -26,14 +34,14 @@ Lines::Lines(std::vector<float> vertices)
     this->vertices = vertices;
 }
 
-void Lines::bind(unsigned int VAO, unsigned int VBO, unsigned int usage)
+void Lines::bind(unsigned int usage)
 {
-    this->VAO = VAO;
-    this->VBO = VBO;
+    this->VAO = receptacle.VAO[vertexNumber - 1];
+    this->VBO = receptacle.VBO[vertexNumber - 1];
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(this->VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], usage);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -48,6 +56,7 @@ void Lines::setWidth(float width)
 void Lines::draw()
 {
     glLineWidth(width);
+        if(VAO != -1)
     glBindVertexArray(VAO);
     glDrawArrays(GL_LINES, 0, (GLsizei)vertices.size() / 3);
 }

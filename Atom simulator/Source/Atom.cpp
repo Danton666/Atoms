@@ -1,5 +1,4 @@
 #include "Atom.hpp"
-
 #include <iostream>
 
 int Atom::makeProgram(unsigned int* program, const char* vertexShader, const char* fragmentShader)
@@ -126,27 +125,17 @@ Atom::~Atom()
     delete core;
 }
 
-void Atom::bind(unsigned int VAO[9], unsigned int VBO[9], unsigned int EBO[5])
+void Atom::bind()
 {
-    /*Initializing VAO, VBO & EBO*/
-    for (int i = 0; i < 9; ++i)
-    {
-        this->VAO[i] = VAO[i];
-        this->VBO[i] = VBO[i];
-
-        if (i < 5)
-            this->EBO[i] = EBO[i];
-    }
-
     /*Bind the core*/
-    core->bindSphere(this->VAO[0], this->VBO[0], this->EBO[0], GL_DYNAMIC_DRAW);
+    core->bind(GL_DYNAMIC_DRAW);
 
     /*Bind Electrons & circles*/
     for (int i = 0; i < 4; ++i)
     {
-        electrons[i]->bindSphere(this->VBO[i + 1], this->VAO[i + 1], this->EBO[i + 1], GL_DYNAMIC_DRAW);
+        electrons[i]->bind(GL_DYNAMIC_DRAW);
 
-        circles[i]->bindCircle(this->VBO[i + 5], this->VBO[i + 5], GL_STATIC_DRAW);
+        circles[i]->bind(GL_STATIC_DRAW);
     }
 }
 
@@ -294,10 +283,6 @@ void Atom::draw()
 
     circles[0]->draw();
     /*draw circles*/
-
-    //view = glm::mat4(1.f);
-    //translation = glm::mat4(1.f);
-    //model = glm::mat4(1.f);
 }
 
 void Atom::setView(const glm::mat4& view)

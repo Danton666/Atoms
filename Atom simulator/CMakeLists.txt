@@ -11,13 +11,13 @@ set(SOURCE	"main.cpp"
             "Source/Entities/Circle.cpp" 
             "Source/Tools/Camera.cpp" 
             "Source/Entities/Lines.cpp" 
-            "Source/Atom.cpp")
+            "Source/Atom.cpp"   "Source/Tools/generator.cpp")
 
 set(HEADERS "Headers/Entities/Sphere.hpp" 
             "Headers/Entities/Circle.hpp" 
             "Headers/Tools/Camera.hpp" 
             "Headers/Entities/Lines.hpp" 
-            "Headers/Atom.hpp")
+            "Headers/Atom.hpp"   "Headers/Tools/generator.hpp" "Headers/global.hpp" "Headers/extern.hpp")
 
 add_executable (Atom ${SOURCE} ${HEADERS} ${GLAD})
 

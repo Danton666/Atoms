@@ -8,6 +8,8 @@
 class Lines
 {
 private:
+    unsigned int vertexNumber;
+
     std::vector<float> vertices;
 
     unsigned int VAO, VBO;
@@ -21,7 +23,7 @@ public:
     Lines(Lines&) = delete;
     Lines(const Lines&) = delete;
 
-    void bind(unsigned int VAO, unsigned int VBO, unsigned int usage = GL_STATIC_DRAW);
+    void bind(unsigned int usage = GL_STATIC_DRAW);
 
     void setWidth(float width);
 

@@ -1,15 +1,23 @@
 #define _USE_MATH_DEFINES
+#include "extern.hpp"
 
 #include "Entities/Circle.hpp"
+#include "Tools/generator.hpp"
 
-#include <iostream>
 #include <cmath>
+
 
 Circle::Circle(float xPos, float yPos, float zPos, unsigned int segments)
 {
-    VAO = 0;
-    VBO = 0;
-    EBO = 0;
+    ++receptacle.vaoCounter;
+    ++receptacle.vboCounter;
+
+    vertexNumber = receptacle.vaoCounter;
+
+    VAO = -1;
+    VBO = -1;
+
+    this->width = 1.f;
 
     this->segments = segments;
 
@@ -27,11 +35,10 @@ Circle::Circle(float xPos, float yPos, float zPos, unsigned int segments)
     }
 }
 
-void Circle::bindCircle(unsigned int VAO, unsigned int VBO, unsigned int usage)
+void Circle::bind(unsigned int usage)
 {
-    this->VAO = VAO;
-    this->VBO = VBO;
-    this->EBO = EBO;
+    this->VAO = receptacle.VAO[vertexNumber - 1];
+    this->VBO = receptacle.VBO[vertexNumber - 1];
 
     glBindVertexArray(this->VAO);
 
@@ -40,6 +47,14 @@ void Circle::bindCircle(unsigned int VAO, unsigned int VBO, unsigned int usage)
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void Circle::setWidth(float width)
+{
+    this->width = width;
 }
 
 void Circle::setOffset(float xOffset, float yOffset, float zOffset)
@@ -84,9 +99,9 @@ void Circle::setScale(float xScale, float yScale, float zScale)
 
 void Circle::draw()
 {
-    glLineWidth(2.f);
+    glLineWidth(width);
 
-    if(this->VAO != 0) 
+    if(this->VAO != -1) 
         glBindVertexArray(this->VAO);
     glDrawArrays(GL_LINE_LOOP, 0, segments);
 }

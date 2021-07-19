@@ -8,12 +8,13 @@
 class Circle
 {
 private:
-    std::vector<float> vertices;
-    //std::vector<unsigned int> indices;
-
+    unsigned int vertexNumber;
     unsigned int segments;
+    unsigned int VAO, VBO;
 
-    unsigned int VAO, VBO, EBO;
+    float width;
+
+    std::vector<float> vertices;
 
 public:
     Circle(float xPos, float yPos, float zPos, unsigned int segments);
@@ -21,8 +22,9 @@ public:
     Circle(Circle&) = delete;
     Circle(const Circle&) = delete;
 
-    void bindCircle(unsigned int VAO, unsigned int VBO, unsigned int usage = GL_STATIC_DRAW);
+    void bind(unsigned int usage = GL_STATIC_DRAW);
 
+    void setWidth(float width);
     void setOffset(float xOffset, float yOffset, float zOffset);
     void setScale(float xScale, float yScale, float zScale);
 
