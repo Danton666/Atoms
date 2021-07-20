@@ -4,7 +4,9 @@ include_directories(C:/GLAD/include C:/glfw-3.3.4/include C:/glm/glm)
 include_directories(Headers)
 
 set(GLAD "C:/GLAD/src/glad.c")
-set(GLUT "C:/glutdlls36/glut.h")
+
+#It is not necessary
+#set(GLUT "C:/glutdlls36/glut.h")
 
 set(SOURCE	"main.cpp" 
             "Source/Entities/Sphere.cpp" 
@@ -28,4 +30,4 @@ target_link_libraries(Atom PRIVATE OpenGl32)
 target_link_libraries(Atom PRIVATE C:/glfw-3.3.4/build/src/Debug/glfw3.lib)
 
 #Glut
-target_link_libraries(Atom PRIVATE C:/glutdlls36/glut.lib C:/glutdlls36/glut32.lib)
+#target_link_libraries(Atom PRIVATE C:/glutdlls36/glut.lib C:/glutdlls36/glut32.lib)
